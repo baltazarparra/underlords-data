@@ -31,8 +31,8 @@ const scrape = async () => {
     hero.click()
     console.log('[✋] wait loading')
     await page.waitForSelector('.rb-build-breadcrumb-a')
-    console.log('[🕷] scraping data')
-    const alliance = await page.evaluate(() => document.querySelector('.champion-role-info').innerText)
+    console.log(`[🕷] scraping data for hero ${i}`)
+    const alliance = await page.evaluate(() => document.querySelector('.champion-role-info').innerText.split('|'))
     const guide = await page.evaluate(() => document.querySelector('.rb-build-sec-desc.singles-top').innerText)
     const name = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(2) > table > tbody > tr:nth-child(1) > th:nth-child(1)').innerText)
     const cost = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(2) > table > tbody > tr:nth-child(2) > td:nth-child(2)').innerText)
@@ -48,7 +48,7 @@ const scrape = async () => {
     const Ability = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(3) > table > tbody > tr:nth-child(1) > th:nth-child(2)').innerText)
     const description = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(3) > table > tbody > tr:nth-child(2) > td:nth-child(2)').innerText)
     const cooldown = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(3) > table > tbody > tr:nth-child(3) > td:nth-child(2)').innerText)
-    console.log('[📊] saving data')
+    console.log(`[📊] saving data for ${name}`)
     await db.get('hero')
       .push(
         {
