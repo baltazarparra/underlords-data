@@ -9,7 +9,7 @@ const scrape = async () => {
 
   const url = 'https://rankedboost.com/dota-underlords/'
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
   const page = await browser.newPage()
@@ -18,20 +18,21 @@ const scrape = async () => {
   await page.waitForSelector('.TierListChampionContainer')
 
   const heroes = await page.$$('.TierListChampionContainer')
+
+  console.log(`[😎] ${heroes.length} Heros found!`)
+
   for (let i = 0; i < heroes.length; i++) {
-    console.log('[▷] Open page')
     await page.goto(url)
     console.log('[✋] wait loading')
     await page.waitForSelector('.TierListChampionContainer')
     console.log('[π] counting heroes')
     const heroes = await page.$$('.TierListChampionContainer')
-    console.log(`[😎] ${heroes.length} Heros found!`)
     const hero = heroes[i]
     console.log(`[😎] Click in heros datails`)
     hero.click()
     console.log('[✋] wait loading')
     await page.waitForSelector('.rb-build-breadcrumb-a')
-    console.log(`[🕷] scraping data for hero ${i}`)
+    console.log(`[🕷] scraping data for hero ${i + 1}`)
     const alliance = await page.evaluate(() => document.querySelector('.champion-role-info').innerText.split('|'))
     const guide = await page.evaluate(() => document.querySelector('.rb-build-sec-desc.singles-top').innerText)
     const name = await page.evaluate(() => document.querySelector('body > div.site-container.m-wrapper > div.site-inner > div > div.container > div > main > article > div > div.rb-build-article > div:nth-child(2) > table > tbody > tr:nth-child(1) > th:nth-child(1)').innerText)
@@ -70,10 +71,11 @@ const scrape = async () => {
           cooldown
         }
       ).write()
-    console.log('[⬅️] saving data')
+    console.log('[⬅️] go back for home')
     await page.goBack()
   }
   console.log('[✌] Finish')
+  await page.close()
 }
 
 scrape()
